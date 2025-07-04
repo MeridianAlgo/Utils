@@ -17,11 +17,13 @@ This Node.js script fetches historical bars (OHLCV data) for stocks or crypto fr
    ```bash
    npm install node-fetch dotenv
    ```
-3. **Create a `.env` file** in the project root with your Alpaca API credentials:
+3. **Create a `.env` file in the project root.**
+   This file is required to securely store your Alpaca API credentials. Create a file named `.env` (no filename, just the extension) and add the following lines:
    ```env
    ALPACA_API_KEY=your_alpaca_api_key_here
    ALPACA_API_SECRET=your_alpaca_api_secret_here
    ```
+   Replace `your_alpaca_api_key_here` and `your_alpaca_api_secret_here` with your actual Alpaca API key and secret.
 
 ## Usage
 Run the script with Node.js:
