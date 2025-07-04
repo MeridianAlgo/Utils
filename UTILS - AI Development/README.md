@@ -25,7 +25,27 @@ This project provides simple command-line chatbots for Google's Gemini API in bo
      ```
 3. **Set your Gemini API key:**
    - The API key is currently set directly in both `chatbot.py` and `chatbot.js` for demonstration.
-   - For production, move the key to a `.env` file or environment variable for security.
+   - **Recommended for production:** Use a `.env` file to store your API key securely.
+
+## Using a `.env` File (Recommended)
+
+1. **Create a file named `.env` in your project root:**
+   ```
+   GEMINI_API_KEY=your_actual_gemini_api_key_here
+   ```
+2. **Update your code:**
+   - For Python, make sure you have these lines at the top:
+     ```python
+     from dotenv import load_dotenv
+     load_dotenv()
+     ```
+     And use `os.getenv("GEMINI_API_KEY")` to access the key.
+   - For Node.js, add this at the top:
+     ```js
+     import 'dotenv/config';
+     ```
+     And use `process.env.GEMINI_API_KEY` to access the key.
+3. **Remove the hardcoded API key from your code for security.**
 
 ## Usage
 
