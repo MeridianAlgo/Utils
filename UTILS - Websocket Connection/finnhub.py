@@ -8,7 +8,7 @@ import time
 from datetime import datetime
 
 # Set your Finnhub API key directly here
-FINNHUB_API_KEY = 'APIKEY PUT IT WITHIN THESE QUOTES'  # <-- Replace with your actual API key
+FINNHUB_API_KEY = 'FINNHUB_API_KEY'  # <-- Replace with your actual API key
 
 # Symbol to subscribe to (e.g., 'BINANCE:BTCUSDT' for Bitcoin/USDT on Binance, or 'AAPL' for Apple)
 SYMBOL = 'AAPL'
