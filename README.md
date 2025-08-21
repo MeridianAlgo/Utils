@@ -4,42 +4,6 @@ Welcome to the **Finance & AI Utilities Collection**! This repository contains a
 
 ---
 
-## 🚦 Visual Workflow
-
-```mermaid
-graph TD;
-    A[Start Here: README.md] --> B[Pick a Utility Folder]
-    B --> C1[Portfolio Tracker (yfinance API)]
-    B --> C2[Options Chain Simulator (NO API)]
-    B --> C3[Technical Indicators (NO API)]
-    B --> C4[Order Execution Simulator (NO API)]
-    B --> C5[Economic Calendar Simulator (NO API)]
-    B --> C6[Dividend Tracker (NO API)]
-    B --> C7[Currency Converter (NO API)]
-    B --> C8[Sentiment Analysis on News (NO API)]
-    B --> C9[AI Development (Gemini API)]
-    B --> C10[Historical Data (Alpaca API)]
-    B --> C11[News Fetching (Alpaca API)]
-    B --> C12[Logging (NO API)]
-    B --> C13[Websocket Connection (Finnhub API)]
-    C1 --> D[Follow README instructions]
-    C2 --> D
-    C3 --> D
-    C4 --> D
-    C5 --> D
-    C6 --> D
-    C7 --> D
-    C8 --> D
-    C9 --> D
-    C10 --> D
-    C11 --> D
-    C12 --> D
-    C13 --> D
-    D --> E[Run, Learn, Experiment!]
-```
-
----
-
 ## 🗺️ Learning Roadmap
 
 1. **Absolute Beginner**
@@ -160,4 +124,4 @@ Contributions, suggestions, and improvements are welcome! Please open an issue o
 
 ---
 
-Happy learning and building! 🚀
+**Made with ❤️ by MeridianAlgo**
