@@ -1,101 +1,114 @@
-<<<<<<< HEAD
-# Finnhub WebSocket Utility
+# WebSocket Connection Utilities
 
-This project is a utility for connecting to the Finnhub WebSocket API to receive real-time stock or cryptocurrency price updates using Python. It is designed for educational and practical use.
+This project provides WebSocket clients for connecting to various financial data providers, including YFLive and Finnhub. These utilities are designed for real-time market data streaming and analysis.
 
-## Features
-- Connects to Finnhub WebSocket API
-- Subscribes to real-time trade data for a specified symbol (stock or crypto)
-- Prints formatted trade data to the console
-- Easy to configure and extend
+## Available Clients
+
+### 1. YFLive WebSocket Client
+A robust WebSocket client for connecting to YFLive's real-time market data feed.
+
+#### Features
+- Real-time stock price updates
+- Support for multiple symbols
+- Automatic reconnection
+- Customizable callbacks
+- Thread-safe implementation
+
+#### Requirements
+- Python 3.7+
+- websocket-client
+- python-dateutil
+
+#### Installation
+```bash
+pip install -r requirements.txt
+```
+
+#### Quick Start
+```python
+from yflive_websocket import YFLiveWebSocket
+
+def on_message(data):
+    print(f"Received data: {data}")
+
+# Create and start the WebSocket client
+ws = YFLiveWebSocket(
+    symbols=["AAPL", "MSFT", "GOOGL"],
+    on_message=on_message
+)
+ws.connect()
+
+# Keep the script running
+import time
+try:
+    while True:
+        time.sleep(1)
+except KeyboardInterrupt:
+    ws.disconnect()
+```
+
+#### Example Output
+```
+[YFLive] 2023-09-27T12:00:00.000000 - Connection opened
+[YFLive] Subscribed to symbols: AAPL, MSFT, GOOGL
+[YFLive] 2023-09-27T12:00:01.123456 - Received data: {'id': 'AAPL', 'price': 150.25, 'changePercent': 0.5}
+[YFLive] 2023-09-27T12:00:01.234567 - Received data: {'id': 'MSFT', 'price': 325.10, 'changePercent': 0.3}
+```
+
+## Documentation
+
+### YFLiveWebSocket Class API
+
+#### Initialization
+```python
+YFLiveWebSocket(
+    symbols: List[str],
+    on_message: Optional[Callable[[Dict[str, Any]], None]] = None,
+    on_error: Optional[Callable[[str], None]] = None,
+    on_close: Optional[Callable[[], None]] = None,
+    on_open: Optional[Callable[[], None]] = None,
+    reconnect: bool = True,
+    reconnect_interval: int = 5
+)
+```
+
+#### Key Methods
+- `connect()`: Start the WebSocket connection and background thread.
+- `disconnect()`: Gracefully close the connection and stop the thread.
+- `subscribe(symbols)`: Subscribe to additional tickers at runtime.
+- `unsubscribe(symbols)`: Stop receiving updates for specific tickers.
+
+### Error Handling & Reconnection
+- Automatic reconnection with exponential backoff when `reconnect=True`.
+- Custom callbacks for open, close, error, and message events.
+- JSON parsing safety with graceful error reporting.
 
 ## Requirements
-- Python 3.7 or higher (tested on 3.11+)
-- The `websocket-client` package (may already be installed on some systems)
-
-To ensure you have the required package, you can run:
-```
-pip install websocket-client
-```
-
-## Setup
-
-1. **Get a Finnhub API Key:**
-   - Sign up at [Finnhub.io](https://finnhub.io/) and get your free API key.
-2. **Set your API key:**
-   - Open `finnhub.py` and set your API key directly in the file:
-     ```python
-     FINNHUB_API_KEY = 'APIKEY PUT IT WITHIN THESE QUOTES' 
-     ```
-3. **Choose your symbol:**
-   - Set the `SYMBOL` variable to the stock or crypto symbol you want to track (e.g., `AAPL` for Apple, `BINANCE:BTCUSDT` for Bitcoin/USDT).
-
-## Usage
-
-Run the script with:
-```
-python finnhub.py
-```
-
-## Notes
-- Free Finnhub accounts may have limited access to certain symbols or WebSocket features.
-- If you see a 401 error, double-check your API key and account status.
-- The script is set to run for a limited time (e.g., 30 seconds) and then close automatically.
-- The `websocket-client` package is recommended for compatibility, but some Python distributions may already include WebSocket support.
-
-## About
-This project is a simple utility for developers, students, and hobbyists who want to quickly connect to Finnhub's WebSocket API and see real-time price data in action. It is intended for educational and utility purposes. 
-=======
-# Finnhub WebSocket Utility (USES Finnhub API)
-
-**This utility uses the Finnhub API (WebSocket) to fetch real-time price updates.** All other logic and data are managed locally for learning and experimentation.
-
-This project is a utility for connecting to the Finnhub WebSocket API to receive real-time stock or cryptocurrency price updates using Python. It is designed for educational and practical use.
-
-## Features
-- Connects to Finnhub WebSocket API
-- Subscribes to real-time trade data for a specified symbol (stock or crypto)
-- Prints formatted trade data to the console
-- Easy to configure and extend
-- **Beginner-friendly:** All code is commented for learning
-
-## Requirements
-- Python 3.7 or higher (tested on 3.11+)
-- The `websocket-client` package:
-  ```sh
-  pip install websocket-client
+- Python 3.8 or higher.
+- Install dependencies with:
+  ```bash
+  pip install -r requirements.txt
   ```
-- A Finnhub API key ([get one here](https://finnhub.io/))
 
-## Setup
-1. Clone or download this repository.
-2. Install the required package:
-   ```sh
-   pip install websocket-client
-   ```
-3. Get your Finnhub API key and set it in `finnhub.py`:
-   ```python
-   FINNHUB_API_KEY = 'APIKEY PUT IT WITHIN THESE QUOTES'
-   ```
-4. Set the `SYMBOL` variable to the stock or crypto symbol you want to track (e.g., `AAPL`, `BINANCE:BTCUSDT`).
+## Project Structure
+- `yflive_websocket.py`: Main YFLive client implementation.
+- `finnhub.py`: Legacy Finnhub example (kept for reference).
+- `requirements.txt`: Python dependencies.
+- `README.md`: This documentation.
 
-## Usage Workflow (Step-by-Step)
-1. Run the script:
-   ```sh
-   python finnhub.py
-   ```
-2. The script will connect to Finnhub and print real-time price updates for your chosen symbol.
-
-**Note:** This tool fetches data using the Finnhub API. You need an internet connection and a valid API key.
+## Usage Workflow
+1. Install requirements.
+2. Review `example_usage()` in `yflive_websocket.py` for a template.
+3. Run your script or interactively explore in Jupyter/VS Code.
 
 ## Educational Notes
-- **How does it work?** The script connects to Finnhub's WebSocket and prints incoming trade data.
-- **How is the code structured?** Each function is commented to explain its purpose. The code is designed for easy modification.
-- **How can you extend it?** Try subscribing to multiple symbols, or saving the data to a file!
+- Experiment with different symbol lists to observe simultaneous streams.
+- Implement persistence by writing data to CSV/SQLite.
+- Combine with the portfolio utilities in `UTILS - Portfolio Tracker/` for live monitoring.
 
 ## License
 MIT
 
 ## References
-- [Finnhub API Docs](https://finnhub.io/docs/api) 
->>>>>>> 8944b09 (Initial commit: Comprehensive Python & JS Finance Utilities for Beginners (API & API-free, with detailed docs))
+- [YFLive WebSocket Docs](https://streamer.finance.yahoo.com)
+- [websocket-client Documentation](https://websocket-client.readthedocs.io/)

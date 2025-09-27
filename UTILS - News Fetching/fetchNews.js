@@ -1,122 +1,63 @@
-<<<<<<< HEAD
-const axios = require('axios');
+const googleNews = require('google-news-json');
 const readline = require('readline');
 
-// Replace with your Alpaca API Key and Secret
-const API_KEY = 'ALPACA_API_KEY';
-const API_SECRET = 'ALPACA_API_SECRET';
-
-// Set up readline interface for user input
 const rl = readline.createInterface({
   input: process.stdin,
-  output: process.stdout
+  output: process.stdout,
 });
 
-// Prompt user for symbol and hours
-rl.question('Enter the symbol (e.g., AAPL, BTCUSD): ', (symbol) => {
-  rl.question('How many hours back for recent news? (default 24): ', (hoursInput) => {
-    const hours = parseInt(hoursInput) || 24;
-    // Calculate the start time for recent news
-    const now = new Date();
-    const since = new Date(now.getTime() - hours * 60 * 60 * 1000);
-    const startISO = since.toISOString();
-
-    const fetchNews = async () => {
-      try {
-        const params = {};
-        if (symbol) params.symbols = symbol;
-        params.start = startISO; // Only fetch news from the last N hours
-
-        const response = await axios.get('https://data.alpaca.markets/v1beta1/news', {
-          headers: {
-            'APCA-API-KEY-ID': API_KEY,
-            'APCA-API-SECRET-KEY': API_SECRET,
-          },
-          params
-        });
-
-        const news = response.data.news;
-        if (!news || news.length === 0) {
-          console.log('No news found for the given criteria.');
-          rl.close();
-          return;
-        }
-        news.forEach((article, idx) => {
-          console.log(`\n[${idx + 1}] ${article.headline}`);
-          console.log(`Source: ${article.source}`);
-          console.log(`Summary: ${article.summary}`);
-          console.log(`URL: ${article.url}`);
-          console.log('---');
-        });
-      } catch (error) {
-        console.error('Error fetching news:', error.response ? error.response.data : error.message);
-      } finally {
-        rl.close();
-      }
-    };
-
-    console.log('Fetching news with criteria:', { symbol, start: startISO });
-    fetchNews();
+const askQuestion = (query) =>
+  new Promise((resolve) => {
+    rl.question(query, (answer) => resolve(answer));
   });
-=======
-const axios = require('axios');
-const readline = require('readline');
 
-// Replace with your Alpaca API Key and Secret
-const API_KEY = 'ALPACA_API_KEY';
-const API_SECRET = 'ALPACA_API_SECRET';
+const fetchGoogleNews = async () => {
+  console.log('Google News fetcher ready. Press Ctrl+C to exit at any time.');
 
-// Set up readline interface for user input
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout
-});
+  const keyword = (await askQuestion('Enter a company name or keyword (e.g., stocks, AAPL): ')).trim();
+  if (!keyword) {
+    console.log('Keyword is required to search Google News. Exiting.');
+    rl.close();
+    return;
+  }
 
-// Prompt user for symbol and hours
-rl.question('Enter the symbol (e.g., AAPL, BTCUSD): ', (symbol) => {
-  rl.question('How many hours back for recent news? (default 24): ', (hoursInput) => {
-    const hours = parseInt(hoursInput) || 24;
-    // Calculate the start time for recent news
-    const now = new Date();
-    const since = new Date(now.getTime() - hours * 60 * 60 * 1000);
-    const startISO = since.toISOString();
+  const regionInput = (await askQuestion('Enter locale (default en-US, format lang-country): ')).trim() || 'en-US';
+  const [language, country] = regionInput.includes('-')
+    ? regionInput.split('-')
+    : [regionInput, 'US'];
 
-    const fetchNews = async () => {
-      try {
-        const params = {};
-        if (symbol) params.symbols = symbol;
-        params.start = startISO; // Only fetch news from the last N hours
+  const maxArticles = parseInt((await askQuestion('How many articles would you like? (default 10): ')).trim(), 10) || 10;
 
-        const response = await axios.get('https://data.alpaca.markets/v1beta1/news', {
-          headers: {
-            'APCA-API-KEY-ID': API_KEY,
-            'APCA-API-SECRET-KEY': API_SECRET,
-          },
-          params
-        });
+  console.log('\nFetching Google News articles...', { keyword, locale: `${language}-${country}`, maxArticles });
 
-        const news = response.data.news;
-        if (!news || news.length === 0) {
-          console.log('No news found for the given criteria.');
-          rl.close();
-          return;
-        }
-        news.forEach((article, idx) => {
-          console.log(`\n[${idx + 1}] ${article.headline}`);
-          console.log(`Source: ${article.source}`);
-          console.log(`Summary: ${article.summary}`);
-          console.log(`URL: ${article.url}`);
-          console.log('---');
-        });
-      } catch (error) {
-        console.error('Error fetching news:', error.response ? error.response.data : error.message);
-      } finally {
-        rl.close();
+  googleNews.getNews(googleNews.SEARCH, keyword, `${language}-${country}`, (error, response) => {
+    if (error) {
+      console.error('Error fetching Google News:', error.message || error);
+      rl.close();
+      return;
+    }
+
+    const articles = Array.isArray(response) ? response.slice(0, maxArticles) : [];
+
+    if (articles.length === 0) {
+      console.log('No articles returned by Google News for the given criteria.');
+      rl.close();
+      return;
+    }
+
+    articles.forEach((article, index) => {
+      console.log(`\n[${index + 1}] ${article.title}`);
+      console.log(`Source: ${article.publisher || article.publishers || 'Unknown'}`);
+      console.log(`Published: ${article.time}`);
+      if (article.snippet) {
+        console.log(`Snippet: ${article.snippet}`);
       }
-    };
+      console.log(`URL: ${article.link}`);
+      console.log('---');
+    });
 
-    console.log('Fetching news with criteria:', { symbol, start: startISO });
-    fetchNews();
+    rl.close();
   });
->>>>>>> 8944b09 (Initial commit: Comprehensive Python & JS Finance Utilities for Beginners (API & API-free, with detailed docs))
-}); 
+};
+
+fetchGoogleNews();

@@ -1,56 +1,69 @@
-<<<<<<< HEAD
-# Gemini API Chatbot in Python
-# This script allows you to chat with Google's Gemini model from the command line.
-# The API key is set directly in the script for demonstration purposes.
-# For production, consider using a .env file or environment variable for security.
+"""Command-line chatbot powered by Google's Gemini API.
 
-from google import genai  # Official Gemini API Python SDK
+The script is resilient to missing dependencies or API keys so it can be
+executed in teaching environments without external configuration. If the
+`google-genai` package is unavailable or the `GEMINI_API_KEY` environment
+variable is not set to a real key, the script will exit gracefully.
+"""
+
+from __future__ import annotations
+
 import os
+import sys
+from typing import Optional
 
-# Set the Gemini API key directly (replace with your own key)
-os.environ["GEMINI_API_KEY"] = "YOUR_GEMINI_API_KEY"
 
-# Initialize the Gemini API client (reads API key from environment variable)
-client = genai.Client()
+def initialize_client() -> Optional["genai.Client"]:
+    """Initialise the Gemini client when dependencies and keys are available."""
 
-print("Gemini Chatbot (type 'exit' to quit)")
+    try:
+        from google import genai  # type: ignore import
+    except ImportError:
+        print("Gemini SDK not installed. Skipping interactive session.")
+        return None
 
-# Main chat loop
-while True:
-    user_input = input("You: ")  # Get user input
-    if user_input.lower() == "exit":  # Exit condition
-        break
-    # Send the user input to Gemini and get the response
-    response = client.models.generate_content(
-        model="gemini-2.5-flash",  # Use the high-throughput Gemini model
-        contents=user_input
-    )
-=======
-# Gemini API Chatbot in Python
-# This script allows you to chat with Google's Gemini model from the command line.
-# The API key is set directly in the script for demonstration purposes.
-# For production, consider using a .env file or environment variable for security.
+    api_key = os.getenv("GEMINI_API_KEY")
+    if not api_key or api_key == "YOUR_GEMINI_API_KEY":
+        print("GEMINI_API_KEY not configured. Skipping interactive session.")
+        return None
 
-from google import genai  # Official Gemini API Python SDK
-import os
+    try:
+        return genai.Client(api_key=api_key)
+    except Exception as exc:  # pragma: no cover - defensive
+        print(f"Failed to initialise Gemini client: {exc}")
+        return None
 
-# Set the Gemini API key directly (replace with your own key)
-os.environ["GEMINI_API_KEY"] = "YOUR_GEMINI_API_KEY"
 
-# Initialize the Gemini API client (reads API key from environment variable)
-client = genai.Client()
+def chat_loop(client: "genai.Client") -> None:
+    """Interactive chat loop using an initialised Gemini client."""
 
-print("Gemini Chatbot (type 'exit' to quit)")
+    print("Gemini Chatbot (type 'exit' to quit)")
+    while True:
+        user_input = input("You: ")
+        if user_input.strip().lower() == "exit":
+            break
 
-# Main chat loop
-while True:
-    user_input = input("You: ")  # Get user input
-    if user_input.lower() == "exit":  # Exit condition
-        break
-    # Send the user input to Gemini and get the response
-    response = client.models.generate_content(
-        model="gemini-2.5-flash",  # Use the high-throughput Gemini model
-        contents=user_input
-    )
->>>>>>> 8944b09 (Initial commit: Comprehensive Python & JS Finance Utilities for Beginners (API & API-free, with detailed docs))
-    print("Gemini:", response.text)  # Print Gemini's response 
+        try:
+            response = client.models.generate_content(
+                model="gemini-2.5-flash",
+                contents=user_input,
+            )
+            output_text = getattr(response, "text", str(response))
+            print("Gemini:", output_text)
+        except Exception as exc:  # pragma: no cover - defensive
+            print(f"Gemini response failed: {exc}")
+
+
+def main() -> int:
+    """Entry-point for the CLI script."""
+
+    client = initialize_client()
+    if client is None:
+        return 0
+
+    chat_loop(client)
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
