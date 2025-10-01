@@ -321,7 +321,15 @@ By completing this curriculum, you will be able to:
 - **Use data science techniques** for financial analysis
 
 ---
+## A Quick Disclaimer
 
-**Made with ❤️ by MeridianAlgo**
+This material is for informational purposes only and does not constitute financial, investment, legal, tax, or accounting advice. It is not intended to provide personalized recommendations or solicitations to buy or sell any securities or financial products.
+Investing involves substantial risks, including the potential loss of principal. Market conditions, economic factors, and other variables can lead to volatility and losses. Past performance is not indicative of future results; historical returns do not guarantee similar outcomes.
+Always consult a qualified financial advisor, attorney, or tax professional to assess your specific situation, risk tolerance, and objectives before making any investment decisions. We assume no liability for actions taken based on this information.
+
+---
+
+**Made with ❤️ by Quantum Meridian (A MeridianAlgo Team)**
 
 *Empowering the next generation of quantitative finance professionals through hands-on learning and practical implementation.*
+
